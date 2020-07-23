@@ -30,7 +30,7 @@ public class ReverseGecoderModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getAddressFromLocation(final double latitude, final double longitude, final String language, final Promise promise) {
+    public void reverseGeocodeLocation(final double latitude, final double longitude, final String language, final Promise promise) {
 
         Geocoder geocoder = new Geocoder(reactContext, Locale.forLanguageTag(language));
         try {
@@ -38,18 +38,18 @@ public class ReverseGecoderModule extends ReactContextBaseJavaModule {
             if (addressList != null && addressList.size() > 0) {
                 Address address = addressList.get(0);
                 WritableMap addressData = new WritableNativeMap();
-                addressData.putString("Country",address.getCountryName());
-                addressData.putString("PostalCode",address.getPostalCode());
-                addressData.putString("Street",address.getThoroughfare());
-                addressData.putString("StreetNumber",address.getSubThoroughfare());
                 addressData.putString("State",address.getAdminArea());
                 addressData.putString("City",address.getLocality());
                 addressData.putString("Name",address.getFeatureName());
                 addressData.putDouble("Latitude", address.getLatitude());
                 addressData.putDouble("Longitude", address.getLongitude());
+                addressData.putString("Country",address.getCountryName());
+                addressData.putString("PostalCode",address.getPostalCode());
+                addressData.putString("Street",address.getThoroughfare());
+                addressData.putString("StreetNumber",address.getSubThoroughfare());
                 promise.resolve(addressData);
             } else {
-                promise.reject("error","Unable to get address for the location");
+                promise.reject("error","Location not available");
             }
         } catch (IOException e) {
             promise.reject(e);
